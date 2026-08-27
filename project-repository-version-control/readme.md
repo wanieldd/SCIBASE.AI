@@ -148,6 +148,23 @@ $ scibase rollback v0.9.0
   - `PUT /repos/{owner}/{name}/blob/{path}` — write a file
 - **Export bundles.** Any repository (or tagged version) can be exported as a
   zipped package containing a manifest, full file tree, and `metadata.json`.
+  The manifest records the repository identity, tagged version, tree hash, and
+  every file with its SHA-256 so a bundle is self-verifying:
+
+  ```json
+  {
+    "schema_version": "1",
+    "repository": "danwusu/mouse-liver-atlas",
+    "version": "1.0.0",
+    "tree_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "exported_at": "2026-08-26T00:00:00Z",
+    "files": [
+      {"path": "metadata.json", "sha256": "…", "size": 1234},
+      {"path": "data/matrix.csv", "sha256": "…", "size": 48291}
+    ]
+  }
+  ```
+
 - **Git-compatible CLI** (`scibase` as shown above) for advanced contributors
   and labs that prefer working from the terminal.
 
