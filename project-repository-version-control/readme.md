@@ -62,7 +62,9 @@ Forks additionally record their parent repository via `derived_from`, preserving
 attribution for downstream derivations (see [§3](#3-collaboration--forking)):
 
 ```json
-"derived_from": "https://scibase.ai/repos/danwusu/mouse-liver-atlas"
+{
+  "derived_from": "https://scibase.ai/repos/danwusu/mouse-liver-atlas"
+}
 ```
 
 ---
