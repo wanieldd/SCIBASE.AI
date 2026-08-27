@@ -81,7 +81,7 @@ attribution for downstream derivations (see [§3](#3-collaboration--forking)):
 
 ### Commit workflow
 
-```
+```console
 $ scibase commit -m "add normalized expression matrix"
 $ scibase tag -v v1.0.0
 $ scibase rollback v0.9.0
