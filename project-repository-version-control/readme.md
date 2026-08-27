@@ -132,7 +132,23 @@ $ scibase rollback v0.9.0
 - **DOIs.** A DOI is minted per repository and per tagged version via Crossref
   or DataCite.
 - **Auto-generated citations** in APA, MLA, and BibTeX formats from
-  `metadata.json`.
+  `metadata.json`. Given the example metadata in [§1](#1-repository-structure--components):
+
+  ```text
+  APA:    Wusu, D. (2026). A single-cell atlas of the mouse liver (Version 1.0.0)
+          [Data set]. SCIBASE. https://doi.org/10.5555/scibase.0000001
+  MLA:    Wusu, Daniel. "A Single-Cell Atlas of the Mouse Liver." SCIBASE, Version 1.0.0,
+          doi:10.5555/scibase.0000001.
+  BibTeX: @misc{wusu2026single,
+            author    = {Wusu, Daniel},
+            title     = {A single-cell atlas of the mouse liver},
+            year      = {2026},
+            publisher = {SCIBASE},
+            version   = {1.0.0},
+            doi       = {10.5555/scibase.0000001}
+          }
+  ```
+
 - **“Cite this project” badge** showing dynamic metadata and usage metrics
   (views, downloads, citations).
 
