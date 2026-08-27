@@ -58,6 +58,13 @@ The single source of truth for repository-level metadata:
 The `metadata.json` also encodes schema.org markup so published repositories
 are indexable by search engines and scholarly aggregators.
 
+Forks additionally record their parent repository via `derived_from`, preserving
+attribution for downstream derivations (see [§3](#3-collaboration--forking)):
+
+```json
+"derived_from": "https://scibase.ai/repos/danwusu/mouse-liver-atlas"
+```
+
 ---
 
 ## 2. File & Metadata Versioning
