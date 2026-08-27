@@ -152,7 +152,19 @@ $ scibase rollback v0.9.0
   ```
 
 - **“Cite this project” badge** showing dynamic metadata and usage metrics
-  (views, downloads, citations).
+  (views, downloads, citations). The badge is rendered from a canonical
+  endpoint and can be embedded anywhere:
+
+  ```html
+  <a href="https://scibase.ai/repos/danwusu/mouse-liver-atlas">
+    <img src="https://scibase.ai/api/repos/danwusu/mouse-liver-atlas/badge"
+         alt="Cite this project — DOI 10.5555/scibase.0000001, 482 views, 91 downloads, 12 citations">
+  </a>
+  ```
+
+  The badge resolves to the current version's citation (APA/MLA/BibTeX) and its
+  metrics stay live: every tag bumps the version string shown, and the counts
+  update from the same API that powers the repository's public page.
 
 ---
 
