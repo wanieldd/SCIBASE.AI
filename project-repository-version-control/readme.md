@@ -105,6 +105,19 @@ $ scibase rollback v0.9.0
 - **Provenance tracking.** Every commit records author, timestamp, and the
   files changed, so "who contributed what, and when" is always recoverable.
 
+### Collaboration workflow
+
+The same `scibase` CLI used for versioning ([§2](#2-file--metadata-versioning))
+drives the collaboration features:
+
+```console
+$ scibase fork danwusu/mouse-liver-atlas            # clone + record derived_from
+$ scibase branch alt-normalization                  # parallel experiment branch
+$ scibase commit -m "try CPM normalization on branch"
+$ scibase mr create -b alt-normalization            # propose a merge request
+$ scibase mr merge alt-normalization                # review & merge (with discussion)
+```
+
 ---
 
 ## 4. In-Browser Editors & Diffs
