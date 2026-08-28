@@ -197,19 +197,19 @@ $ scibase mr merge alt-normalization                # review & merge (with discu
   The manifest records the repository identity, tagged version, tree hash, and
   every file with its SHA-256 so a bundle is self-verifying:
 
-```json
-{
-  "schema_version": "1",
-  "repository": "danwusu/mouse-liver-atlas",
-  "version": "1.0.0",
-  "tree_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-  "exported_at": "2026-08-26T00:00:00Z",
-  "files": [
-    {"path": "metadata.json", "sha256": "4bf2a5e11b6d3c2f8a9e0d1c5f7b3a6c8e2d4f6a9b0c1d3e5f7a8b9c0d1e2f3a4", "size": 1234},
-    {"path": "data/matrix.csv", "sha256": "7a1d9e3f2b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2", "size": 48291}
-  ]
-}
-```
+  ```json
+  {
+    "schema_version": "1",
+    "repository": "danwusu/mouse-liver-atlas",
+    "version": "1.0.0",
+    "tree_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "exported_at": "2026-08-26T00:00:00Z",
+    "files": [
+      {"path": "metadata.json", "sha256": "4bf2a5e11b6d3c2f8a9e0d1c5f7b3a6c8e2d4f6a9b0c1d3e5f7a8b9c0d1e2f3a4", "size": 1234},
+      {"path": "data/matrix.csv", "sha256": "7a1d9e3f2b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2", "size": 48291}
+    ]
+  }
+  ```
 
 - **Git-compatible CLI** (`scibase` as shown above) for advanced contributors
   and labs that prefer working from the terminal.
