@@ -190,10 +190,12 @@ $ scibase mr merge alt-normalization                # review & merge (with discu
   - `GET /repos/{owner}/{name}/tree` — file listing
   - `GET /repos/{owner}/{name}/blob/{path}` — file contents
   - `GET /repos/{owner}/{name}/badge` — cite-this-project badge and metrics (see §6)
+  - `GET /repos/{owner}/{name}/export` — download an export bundle (see below)
   - `POST /repos` — create a repository
   - `PUT /repos/{owner}/{name}/blob/{path}` — write a file
 - **Export bundles.** Any repository (or tagged version) can be exported as a
-  zipped package containing a manifest, full file tree, and `metadata.json`.
+  zipped package containing a manifest, full file tree, and `metadata.json`,
+  served from `GET /repos/{owner}/{name}/export`.
   The manifest records the repository identity, tagged version, tree hash, and
   every file with its SHA-256 so a bundle is self-verifying:
 
