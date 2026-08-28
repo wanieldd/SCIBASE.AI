@@ -200,7 +200,9 @@ $ scibase mr merge alt-normalization                # review & merge (with discu
 - **Public REST API** for project and data access:
   - `GET /repos/{owner}/{name}` — repository metadata
   - `GET /repos/{owner}/{name}/tree` — file listing
+  - `GET /repos/{owner}/{name}/tree?ref={tag}` — file listing at a tagged version
   - `GET /repos/{owner}/{name}/blob/{path}` — file contents
+  - `GET /repos/{owner}/{name}/blob/{path}?ref={tag}` — file contents at a tagged version
   - `GET /repos/{owner}/{name}/badge` — cite-this-project badge and metrics (see §6)
   - `GET /repos/{owner}/{name}/export` — download an export bundle (see below)
   - `POST /repos` — create a repository
