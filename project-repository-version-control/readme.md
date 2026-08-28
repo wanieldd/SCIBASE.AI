@@ -83,6 +83,18 @@ attribution for downstream derivations (see [§3](#3-collaboration--forking)):
   hash of a tagged commit is recorded alongside the tag, giving a
   cryptographically verifiable fingerprint for reproducibility and citation.
 
+A tag records the semantic version, the commit tree hash, and a timestamp. The
+same `tree_sha256` is what appears in the export bundle manifest ([§7](#7-programmatic-access--export)), so a downloaded bundle can be verified against the
+tagged release it claims to be:
+
+```json
+{
+  "tag": "v1.0.0",
+  "tree_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+  "committed_at": "2026-08-26T00:00:00Z"
+}
+```
+
 ### Commit workflow
 
 ```console
