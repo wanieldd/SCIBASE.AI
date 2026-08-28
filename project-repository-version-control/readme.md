@@ -37,7 +37,7 @@ The single source of truth for repository-level metadata:
 
 ```json
 {
-  "name": "single-cell-atlas-of-mouse-liver",
+  "name": "mouse-liver-atlas",
   "title": "A single-cell atlas of the mouse liver",
   "doi": "10.5555/scibase.0000001",
   "version": "1.0.0",
