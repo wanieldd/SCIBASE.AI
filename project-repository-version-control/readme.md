@@ -205,8 +205,8 @@ $ scibase mr merge alt-normalization                # review & merge (with discu
     "tree_sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
     "exported_at": "2026-08-26T00:00:00Z",
     "files": [
-      {"path": "metadata.json", "sha256": "4bf2a5e11b6d3c2f8a9e0d1c5f7b3a6c8e2d4f6a9b0c1d3e5f7a8b9c0d1e2f3a4", "size": 1234},
-      {"path": "data/matrix.csv", "sha256": "7a1d9e3f2b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2", "size": 48291}
+      {"path": "metadata.json", "sha256": "b586df06c59768ecc1374f73eb63f4a7965bc8b36eef111b9d2eda615f8c25e9", "size": 1234},
+      {"path": "data/matrix.csv", "sha256": "02e5c81bfb0f22a0fef7e7313ff1259d1dc989d1ec907686364d5bb4e687029c", "size": 48291}
     ]
   }
   ```
