@@ -76,9 +76,9 @@ attribution for downstream derivations (see [§3](#3-collaboration--forking)):
 - **Git-native backend.** Each repository is a real git repository. Large files
   (datasets, trained weights) are stored via Git LFS so history stays lean.
 - **Semantic versioning.** Released versions follow `MAJOR.MINOR.PATCH`
-  (e.g. `v1.0.0`, `v2.1.0`). Pre-release and preprint tags such as
-  `preprint-v2.1` or `preprint-v1.0-rc1` are supported; shortened `MAJOR.MINOR`
-  forms (e.g. `v1.0`) are accepted as aliases for the latest patch.
+  (e.g. `v1.0.0`, `v2.1.0`). Shortened `MAJOR.MINOR` forms (e.g. `v1.0`) are
+  accepted as aliases for the latest patch. Pre-release and preprint tags such
+  as `preprint-v2.1` or `preprint-v1.0-rc1` are supported.
 - **Hash-based integrity.** Every blob is content-addressed (SHA-256). The tree
   hash of a tagged commit is recorded alongside the tag, giving a
   cryptographically verifiable fingerprint for reproducibility and citation.
