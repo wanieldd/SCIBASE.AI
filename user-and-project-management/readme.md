@@ -1,38 +1,67 @@
 # User & Project Management
 
-User and project management is the foundation of collaboration, access control,
-and attribution on SCIBASE. It provides identity, researcher profiles, and
-scientific workspaces (project spaces) with granular permissions, so that
-researchers, teams, institutions, and external partners can work together
-securely while getting credit for their work.
-
-Every repository ([Project Repository & Version
+User and project management is the identity, access, and workspace governance
+layer of SCIBASE. It determines who researchers are, how they authenticate,
+what their public reputation looks like, and who can see, edit, and govern a
+research project. Every repository ([Project Repository & Version
 Control](../project-repository-version-control/readme.md)) belongs to exactly
 one user or organization and inherits its permissions from the project space.
+
+This document covers four layers: authentication & identity, researcher
+profiles, project spaces, and permissions & access control.
 
 ---
 
 ## 1. Authentication & Identity
 
-### Sign-in methods
+### 1.1 Email & password with 2FA
 
-- **Email & password** with optional two-factor authentication (TOTP-based
-  authenticator app or SMS backup codes).
-- **OAuth integrations** for ORCID, Google, GitHub, and LinkedIn. ORCID is
-  treated as the primary scholarly identity; the others are convenience
-  providers.
-- **Institutional login via SAML** for universities and research centers. A
-  domain can be claimed by an institution, after which members authenticate
-  against the institution's IdP.
-- **Account linking.** Multiple providers can be attached to a single account,
-  producing one unified identity. Signing in with any linked provider reaches
-  the same profile, projects, and permissions.
-- **Anonymous user mode.** Opt-in anonymous browsing and open peer review.
-  Anonymous reviewers get a stable pseudonymous handle (e.g.
-  `anonymous-reviewer-7k2p`) that can accrue review credit without exposing
-  identity.
+Every account can be created with an email and password. Two-factor
+authentication (TOTP-based authenticator app, with SMS backup codes) is
+available on every account and can be made mandatory by an organization owner
+or institution admin. Passwords are stored using a slow password hash
+(Argon2id). 2FA recovery codes are generated at enrollment and must be saved by
+the user.
 
-### Account identity
+```console
+$ scibase signup --email dan@ualberta.ca
+$ scibase login --email dan@ualberta.ca --2fa
+Verification code: 123456
+$ scibase 2fa enable
+```
+
+### 1.2 OAuth integrations
+
+ORCID, Google, GitHub, and LinkedIn can be used as login providers or linked to
+an existing account. ORCID is treated as the primary scholarly identity; the
+others are convenience providers.
+
+```console
+$ scibase login --provider orcid
+$ scibase login --provider github
+$ scibase link-provider linkedin
+$ scibase auth unlink --provider linkedin
+```
+
+### 1.3 Institutional login via SAML
+
+Universities and research centers can enable SAML single sign-on for their
+whole domain. A domain can be claimed by an institution, after which members
+authenticate against the institution's IdP, which also asserts their
+affiliation automatically. Any user with a verified institutional email (e.g.
+`@ualberta.ca`) can log in through the institution's IdP.
+
+```console
+$ scibase login --provider saml --domain ualberta.ca
+```
+
+### 1.4 Account linking & unified identity
+
+Multiple providers can be linked to one account, producing one unified
+identity. Regardless of the login path, a user resolves to a single stable
+account ID, so forks, endorsements, and metrics are never split across
+provider identities. Signing in with any linked provider reaches the same
+profile, projects, and permissions.
 
 ```json
 {
@@ -47,14 +76,15 @@ one user or organization and inherits its permissions from the project space.
 }
 ```
 
-### CLI
+### 1.5 Anonymous mode
+
+Open peer review and public browsing can be done anonymously. Anonymous users
+get a stable pseudonymous handle (e.g. `anonymous-reviewer-7k2p`) that can
+accrue review credit without exposing identity; their actions are excluded from
+attribution on the reviewed work.
 
 ```console
-$ scibase login --provider orcid
-$ scibase login --provider saml --domain ualberta.ca
-$ scibase 2fa enable
-$ scibase link-provider github
-$ scibase whoami
+$ scibase login --anonymous
 ```
 
 ---
@@ -63,51 +93,77 @@ $ scibase whoami
 
 Every user has a public profile that doubles as their attribution record.
 
-### Profile elements
+### 2.1 ORCID sync
 
-- Name, institution, field, short bio, and photo.
-- **ORCID sync.** Pulls in publication history, affiliations, and grants;
-  synced records appear on the profile as verified entries.
-- **Keywords** describing research interests, used to route opportunities and
-  recommendations.
-- **Activity feed.** Recent projects, peer reviews, and collaborations, in
-  reverse chronological order.
-- **Citation & reputation metrics:** downloads, forks, endorsements, and a
-  reproducibility score derived from the reproducibility checks of the user's
-  published repositories (see [Project Repository & Version
-  Control](../project-repository-version-control/readme.md)).
-- **Public vs private profile modes.** Private profiles hide the profile page
-  (but still attribute authorship on public repositories unless anonymous
-  mode is active).
+A user can connect their ORCID iD to pull in publication history, affiliations,
+and grants. Synced records appear on the profile as verified, read-only entries
+and update on a user-configurable schedule; the user can hide individual
+entries without unlinking ORCID.
 
-### Profile record
+```console
+$ scibase orcid sync
+```
+
+### 2.2 Profile elements
+
+Every profile exposes: name, institution, field, bio, keywords, and photo. The
+public profile is rendered from a canonical endpoint:
+
+```text
+https://scibase.ai/users/danwusu
+```
 
 ```json
 {
-  "username": "danwusu",
+  "handle": "danwusu",
   "name": "Daniel Wusu",
-  "institution": "University of Alberta",
-  "field": "Computational Biology",
-  "bio": "Single-cell genomics and reproducible pipelines.",
-  "photo": "https://scibase.ai/users/danwusu/photo",
-  "keywords": ["single-cell", "rna-seq", "reproducibility"],
   "orcid": "0000-0000-0000-0000",
+  "institution": "University of Alberta",
+  "field": "Electrical & Computer Engineering",
+  "bio": "ML infrastructure and reproducible science.",
+  "keywords": ["machine learning", "reproducibility", "single-cell"],
+  "photo": "https://scibase.ai/users/danwusu/avatar.png"
+}
+```
+
+### 2.3 Activity feed
+
+Each profile has an activity feed of recent projects, peer reviews, and
+collaborations — created, forked, or merged repositories, published versions,
+completed reviews, and new collaborations, in reverse chronological order.
+
+### 2.4 Citation & reputation metrics
+
+Profiles aggregate public metrics: downloads, forks, endorsements, and a
+reproducibility score. Endorsements are verifiable attestations from other
+users. The reproducibility score comes from the reproducibility checks described
+in [Project Repository & Version
+Control](../project-repository-version-control/readme.md) (pipeline presence,
+determinism, pinned dependencies).
+
+```json
+{
   "metrics": {
     "downloads": 482,
     "forks": 37,
     "endorsements": 12,
     "reproducibility_score": 0.93
-  },
-  "visibility": "public"
+  }
 }
 ```
 
-### CLI
+### 2.5 Public vs private profiles
+
+Profile mode is user-controlled:
+
+- **Public** — profile page, metrics, and activity feed are visible to everyone.
+- **Private** — profile is only visible to signed-in collaborators; metrics are
+  hidden; the public page returns 404. Authorship on public repositories is
+  still attributed unless anonymous mode is active.
 
 ```console
 $ scibase profile set bio "Single-cell genomics and reproducible pipelines."
 $ scibase profile set keywords "single-cell,rna-seq"
-$ scibase orcid sync
 $ scibase profile set visibility private
 ```
 
@@ -115,25 +171,26 @@ $ scibase profile set visibility private
 
 ## 3. Project Spaces (Scientific Workspaces)
 
-A **project space** is a collaborative workspace that groups everything a
-research effort produces. Unlike a published repository (see Project Repository
-& Version Control), a space is a living container: it can hold draft documents,
+A **project space** is the container around a research effort. It bundles
+documents, code, datasets, and discussion threads, and links collaborators,
+funding sources, and institutions. A space wraps one or more repositories
+([Project Repository & Version
+Control](../project-repository-version-control/readme.md)). Unlike a published
+repository, a space is a living container: it can hold draft documents,
 discussion, and mixed-access collaborators before anything is released.
 
-Each space contains:
+### 3.1 Space contents
 
 - **Documents** — manuscripts and notes, authored natively in Markdown, LaTeX,
   or Jupyter notebooks.
-- **Code and datasets** — analysis scripts and data files, versioned and
-  reproducible like repository artifacts.
-- **Discussion threads and comments** — inline comments on documents and
+- **Code and datasets** — analysis scripts and data files under the repository
+  layout (`code/`, `data/`, `notebooks/`), versioned and reproducible.
+- **Discussion threads & comments** — inline comments on documents and code and
   threaded discussions per space.
-- **Project metadata and citations** — reuse the same `metadata.json` shape as
-  repositories, extended with collaborators, funding sources, and institutions.
+- **Metadata & citations** — project title, description, tags, funding, and
+  linked institutions, reusing the same `metadata.json` shape as repositories.
 - **Linked collaborators, funding sources, and institutions** — people, grants,
   and organizations tied to the space for attribution and reporting.
-
-### Space metadata
 
 ```json
 {
@@ -149,19 +206,24 @@ Each space contains:
 }
 ```
 
-### Space lifecycle
+### 3.2 Authoring
 
-- **Create** — instantiate a space with a name and initial visibility.
-- **Manage** — add collaborators, files, discussions, and metadata over time.
-- **Archive** — freeze a finished space into read-only state while keeping it
-  browsable; archived spaces can later be published as a repository with a DOI.
+Spaces are Markdown/LaTeX/Jupyter-native. Documents and notebooks are edited
+in-browser and versioned exactly like repository files.
 
-### CLI
+### 3.3 Lifecycle
+
+Spaces can be created, managed, and archived. Archiving freezes content,
+revokes write access for non-owners, and moves the space to read-only; archived
+spaces can be restored by an owner or admin, and can later be published as a
+repository with a DOI.
 
 ```console
-$ scibase space create mouse-liver-atlas --visibility private
+$ scibase space create "Single-cell atlas of the mouse liver" \
+    --repo single-cell-atlas-of-mouse-liver --visibility private
 $ scibase space add-document mouse-liver-atlas manuscript/draft.md
 $ scibase space discuss mouse-liver-atlas "proposal: drop low-count cells"
+$ scibase space metadata set --funding "NSERC RGPIN-2024-0000"
 $ scibase space archive mouse-liver-atlas
 ```
 
@@ -169,48 +231,62 @@ $ scibase space archive mouse-liver-atlas
 
 ## 4. Permissions & Access Control
 
-### Visibility settings
+### 4.1 Visibility settings
 
-Each space and repository has one visibility level:
+Every space is one of:
 
-- **Public** — visible to everyone, indexable, citable.
-- **Private** — visible only to members.
-- **Institutional-only** — visible to any authenticated member of the linked
+- **Public** — visible and browsable by anyone; published repositories get DOIs.
+- **Private** — visible only to invited members.
+- **Institutional-only** — visible to any authenticated member of a linked
   institution (SAML domain).
-- **Invitation-only** — visible only to explicitly invited accounts.
-
-### Role-based access
-
-Members are assigned one of five roles. Roles are hierarchical: a role
-inherits all permissions of the roles below it.
-
-| Role        | Permissions                                                                 |
-|-------------|-----------------------------------------------------------------------------|
-| **Owner**   | Full control, including deletion, ownership transfer, and role assignment    |
-| **Admin**   | Manage members, roles, settings, and the audit log                           |
-| **Contributor** | Edit documents, code, and data; open and merge MRs                       |
-| **Reviewer**    | View and comment on all content; approve or request changes on MRs      |
-| **Viewer**      | Read-only access to the space                                              |
-
-### Custom sharing
-
-- **External collaborators** can be invited with time-limited or read-only
-  access, even without an institutional account.
-- Invitations carry an expiry and an optional capability cap.
+- **Invitation-only** — visible only to explicitly invited accounts; strongest
+  default for in-progress work.
 
 ```console
-$ scibase space invite mouse-liver-atlas ada@stanford.edu --role viewer --expires 2026-12-31
-$ scibase space role set mouse-liver-atlas danwusu admin
+$ scibase space visibility set institutional-only
+```
+
+### 4.2 Roles
+
+Membership is role-based. Roles are hierarchical — a role inherits all
+permissions of the roles below it:
+
+| Role        | Capabilities |
+|-------------|--------------|
+| **Owner**   | Everything; transfers ownership, archives/deletes the space, changes visibility. |
+| **Admin**   | Everything except ownership transfer and deletion; manages members and roles. |
+| **Contributor** | Read, write documents/code/datasets, open and merge merge requests. |
+| **Reviewer**    | Read everything, comment and review; cannot push to protected branches. |
+| **Viewer**      | Read-only access to all objects. |
+
+```console
+$ scibase space member add aisha@ualberta.ca --role reviewer
+$ scibase space member role set aisha@ualberta.ca contributor
+```
+
+### 4.3 Custom sharing with external collaborators
+
+External collaborators (no institutional affiliation) can be invited with
+time-limited or read-only access. Invitations carry an expiry and an optional
+capability cap; expired shares are automatically revoked.
+
+```console
+$ scibase space share invite external@lab.org --read-only --expires 2026-12-31
 $ scibase space share mouse-liver-atlas --role reviewer --read-only
 ```
 
-### Fine-grained object-level control
+### 4.4 Fine-grained object-level control
 
-Permissions can be narrowed below the role level on individual objects:
+Access is enforceable per object, not just per role. Permissions are inherited
+from the role default and narrowed by explicit object ACLs; an explicit ACL
+always overrides the role default. For example, a reviewer may be allowed to
+comment on code but denied dataset downloads, or a contributor may edit code
+while dataset access stays restricted:
 
-- Allow code editing but restrict data downloads (e.g. Contributor may edit
-  `code/` but only view `data/`).
-- Allow reviewers to read manuscripts but not datasets.
+```console
+$ scibase object acl set data/ --deny download --grant comment
+$ scibase object acl set code/ --grant edit
+```
 
 ```json
 {
@@ -224,10 +300,20 @@ Permissions can be narrowed below the role level on individual objects:
 }
 ```
 
-### Project-level audit log
+### 4.5 Audit log
 
-Every space keeps an immutable audit log recording access history and changes
-by user: logins, file edits, permission changes, and export/download events.
+Every space keeps an immutable, project-level audit log recording access
+history and changes by user: who viewed, edited, downloaded, changed roles, or
+modified visibility, with timestamps and the repository commit when applicable.
+Audit records are append-only and cannot be edited or deleted by members.
+
+```console
+$ scibase space audit
+2026-08-28T10:02:11Z  danwusu       changed visibility to institutional-only
+2026-08-28T10:01:57Z  aisha@ualberta.ca  added as reviewer
+2026-08-27T16:40:00Z  external@lab.org   granted read-only access (expires 2026-12-31)
+$ scibase space audit mouse-liver-atlas --user ava-chen
+```
 
 ```json
 {
@@ -237,11 +323,6 @@ by user: logins, file edits, permission changes, and export/download events.
     {"at": "2026-08-27T09:12:00Z", "user": "danwusu", "action": "role.set", "object": "ava-chen", "detail": "viewer -> contributor"}
   ]
 }
-```
-
-```console
-$ scibase space audit mouse-liver-atlas
-$ scibase space audit mouse-liver-atlas --user ava-chen
 ```
 
 ---
@@ -259,8 +340,8 @@ $ scibase space audit mouse-liver-atlas --user ava-chen
 
 ## Why This Matters
 
-Granular identity, access control, and attribution are what let researchers get
-credit for their work while institutions maintain visibility and compliance.
-By integrating identity verification (ORCID, SAML), reputation incentives, and
-fine-grained governance, this layer makes large-scale scientific collaboration
-trustworthy and auditable.
+Granular identity, access control, and governance let researchers get credit
+for their work while institutions keep visibility and compliance. Verified
+identity and transparent permissions underpin trustworthy collaboration,
+meaningful attribution, and the reproducibility guarantees that make SCIBASE a
+credible home for open science.
