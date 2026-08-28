@@ -236,8 +236,8 @@ $ scibase mr merge alt-normalization                # review & merge (with discu
 
 - **Provenance tree visualization** — interactive graph of forks, merges, and
   citations.
-- **Immutable snapshots** published to IPFS (or an append-only ledger) for
-  long-term archival integrity.
+- **Immutable snapshots** published to IPFS or blockchain (an append-only
+  ledger) for long-term archival integrity.
 - **Notebook diff viewer** with output/version playback.
 
 ---
